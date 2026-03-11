@@ -1,0 +1,13 @@
+apiVersion: v1
+kind: Service
+metadata:
+  name: minha-app-processa-service
+spec:
+  selector:
+    app: minha-app-processa
+  ports:
+    - protocol: TCP
+      port: 80
+      targetPort: 8080
+  # Usando LoadBalancer para expor o serviço externamente na AWS
+  type: LoadBalancer
