@@ -1,0 +1,40 @@
+name: 'Terraform Destroy Manual 2'
+
+on:
+  # Permite que este workflow seja acionado manualmente pela aba "Actions"
+  workflow_dispatch:
+    inputs:
+      destroy:
+        description: 'Marque para destruir a infraestrutura. CUIDADO!'
+        required: true
+        type: boolean
+        default: false
+
+permissions:
+  id-token: write   # Essencial para a autenticação OIDC
+  contents: read    # Necessário para a action de checkout
+
+jobs:
+  terraform-destroy:
+    name: 'Terraform Destroy'
+    if: github.event_name == 'workflow_dispatch' && github.event.inputs.destroy == 'true'
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v3
+        with:
+          role-to-assume: ${{ secrets.AWS_ROLE_TO_ASSUME }}
+          aws-region: ${{ secrets.AWS_REGION }}
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v2
+
+      - name: Terraform Init
+        run: terraform init
+
+      - name: Terraform Destroy
+        run: terraform destroy -auto-approve -var="db_password=${{ secrets.DB_PASSWORD }}"
