@@ -1,7 +1,7 @@
 package com.example.order.infrastructure.adapters.dynamo;
 
 import com.example.order.application.ports.out.VideoRepositoryPort;
-import com.example.order.domain.entities.Video;
+
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.services.dynamodb.DynamoDbClient;

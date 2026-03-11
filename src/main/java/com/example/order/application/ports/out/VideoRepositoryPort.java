@@ -1,6 +1,6 @@
 package com.example.order.application.ports.out;
 
-import com.example.order.domain.entities.Video;
+import com.example.order.domain.entities.VideoMetadata;
 
 // application/ports/output/VideoRepositoryPort.java
 public interface VideoRepositoryPort {

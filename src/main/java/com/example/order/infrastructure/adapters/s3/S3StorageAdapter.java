@@ -5,25 +5,41 @@ import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 import software.amazon.awssdk.core.sync.RequestBody;
 import software.amazon.awssdk.services.s3.S3Client;
+import software.amazon.awssdk.services.s3.model.GetUrlRequest;
 import software.amazon.awssdk.services.s3.model.PutObjectRequest;
 
-// infrastructure/adapters/s3/S3StorageAdapter.java
+import java.io.File;
+import java.nio.file.Files;
+
 @Component
 public class S3StorageAdapter implements VideoStoragePort {
+
     private final S3Client s3Client;
+    private final String bucketName;
 
-    @Value("${aws.s3.bucket}")
-    private String bucketName;
-
-    public S3StorageAdapter(S3Client s3Client) {
+    public S3StorageAdapter(S3Client s3Client, @Value("${AWS_S3_BUCKET}") String bucketName) {
         this.s3Client = s3Client;
+        this.bucketName = bucketName;
     }
 
-    public void upload(String videoId, byte[] data) {
-        PutObjectRequest request = PutObjectRequest.builder()
+    @Override
+    public byte[] download(String fileName) {
+        return s3Client.getObjectAsBytes(builder -> builder.bucket(bucketName).key(fileName)).asByteArray();
+    }
+
+    @Override
+    public String uploadZip(String fileName, File file) {
+        // 1. Faz o upload do arquivo ZIP
+        s3Client.putObject(PutObjectRequest.builder()
+                        .bucket(bucketName)
+                        .key("processed/" + fileName) // Salva em uma "pasta" diferente no S3
+                        .build(),
+                RequestBody.fromFile(file));
+
+        // 2. Retorna a URL pública (ou pré-assinada) do arquivo
+        return s3Client.utilities().getUrl(GetUrlRequest.builder()
                 .bucket(bucketName)
-                .key("uploads/" + videoId)
-                .build();
-        s3Client.putObject(request, RequestBody.fromBytes(data));
+                .key("processed/" + fileName)
+                .build()).toString();
     }
 }
