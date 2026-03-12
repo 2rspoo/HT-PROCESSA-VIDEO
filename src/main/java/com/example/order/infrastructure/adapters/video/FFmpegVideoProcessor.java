@@ -11,23 +11,25 @@ public class FFmpegVideoProcessor {
 
     public File process(byte[] videoData, String fileName) throws Exception {
         // 1. Criar diretório temporário para o trabalho atual
+        System.out.println("1" );
         Path workDir = Files.createTempDirectory("video_proc_" + System.currentTimeMillis());
         Path framesDir = Files.createDirectory(workDir.resolve("frames"));
-
+        System.out.println("2" );
         // 2. Salvar o array de bytes em um arquivo físico para o FFmpeg ler
         Path videoInputPath = workDir.resolve(fileName);
         Files.write(videoInputPath, videoData);
-
+        System.out.println("3" );
         // 3. Executar o FFmpeg
         // Comando: ffmpeg -i video.mp4 -vf "fps=1/2" frames/img%03d.jpg
         // "fps=1/2" significa 1 frame a cada 2 segundos.
         executeFFmpegCommand(videoInputPath, framesDir);
-
+        System.out.println("4" );
         // 4. Compactar os frames gerados em um ZIP
         File zipFile = createZipFromFolder(framesDir, workDir.resolve("processed_frames.zip"));
-
+        System.out.println("5" );
         // 5. Limpeza: Você pode deletar o diretório temporário após o upload no UseCase
         // (Por enquanto, retornamos o arquivo ZIP para ser enviado ao S3)
+        System.out.println("6" );
         return zipFile;
     }
 
