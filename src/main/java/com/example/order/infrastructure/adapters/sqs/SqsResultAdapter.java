@@ -14,7 +14,7 @@ public class SqsResultAdapter implements VideoResultPort {
     private final ObjectMapper objectMapper;
 
     // Esta é a URL da NOVA FILA (a fila de respostas)
-    @Value("${aws.sqs.results-queue-url}")
+    @Value("${AWS_SQS_RESULT_URL}")
     private String resultsQueueUrl;
 
     public SqsResultAdapter(SqsTemplate sqsTemplate, ObjectMapper objectMapper) {
