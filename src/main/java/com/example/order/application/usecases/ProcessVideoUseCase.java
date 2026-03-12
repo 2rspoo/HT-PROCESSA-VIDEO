@@ -39,7 +39,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
             // 2. Ler o vídeo original do S3
             System.out.println("original do S3 " );
 
-            byte[] videoData = storage.download(video.fileName());
+            byte[] videoData = storage.download(video.pedidoId());
 
             // 3. Processar (FFmpeg: prints + zip)
             System.out.println("FFmpeg " );
