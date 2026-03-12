@@ -47,7 +47,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 
             // 4. Salvar o .zip no S3 e obter a URL
             System.out.println(".zip" );
-            String s3UrlZip = storage.uploadZip(video.fileName() + ".zip", zipFile);
+            String s3UrlZip = storage.uploadZip(video.pedidoId() + ".zip", zipFile);
 
             // 5. Atualizar Dynamo para DONE com a URL do S3
             System.out.println("Dynamo" );
