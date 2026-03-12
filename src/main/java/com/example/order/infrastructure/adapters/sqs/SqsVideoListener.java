@@ -19,12 +19,15 @@ public class SqsVideoListener {
     @SqsListener("${AWS_SQS_URL}")
     public void onMessage(VideoEvent event) {
         try {
-            System.out.println(">>> Processamento iniciado para o ficheiro: " + event.fileName());
+            // Monta a key exata que foi usada no S3 durante o upload
+            String s3Key = "uploads/" + event.id();
+
+            System.out.println(">>> Processamento iniciado para o ficheiro S3: " + s3Key);
 
             VideoMetadata domainVideo = new VideoMetadata(
                     event.id(),
                     event.userId(),
-                    event.fileName(),
+                    s3Key, // Passa a S3 Key montada para o adaptador conseguir fazer o download
                     "RECEIVED",
                     null,
                     LocalDateTime.now()
