@@ -18,7 +18,7 @@ public class SqsVideoListener {
         this.objectMapper = objectMapper;
     }
 
-    @SqsListener("${AWS_SQS_QUEUE_URL}")
+    @SqsListener("${AWS_SQS_URL}")
     public void onMessage(String rawMessage) { // Receba como String pura
         try {
             // Converte manualmente o JSON para o seu VideoEvent local
