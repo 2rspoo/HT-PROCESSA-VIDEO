@@ -15,7 +15,7 @@ public class SqsVideoListener {
         this.processVideoCommand = processVideoCommand;
     }
 
-    @SqsListener("${AWS_SQS_QUEUE_URL}")
+    @SqsListener("${AWS_SQS_URL}")
     public void onMessage(VideoEvent event) {
         // Converte o DTO da infraestrutura para a Entidade de Domínio
         VideoMetadata domainVideo = new VideoMetadata(

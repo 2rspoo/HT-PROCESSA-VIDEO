@@ -13,7 +13,7 @@ public class SqsNotificationAdapter implements NotificationPort {
     private final String queueUrl;
 
     public SqsNotificationAdapter(SqsClient sqsClient,
-                                  @Value("${AWS_SQS_QUEUE_URL}") String queueUrl) {
+                                  @Value("${AWS_SNS_URL}") String queueUrl) {
         this.sqsClient = sqsClient;
         this.queueUrl = queueUrl;
     }
