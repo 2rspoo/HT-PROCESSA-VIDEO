@@ -2,16 +2,17 @@ package com.example.order.infrastructure.adapters.sqs;
 
 import com.example.order.application.ports.in.ProcessVideoCommand;
 import com.example.order.domain.entities.VideoMetadata;
-import com.fasterxml.jackson.databind.ObjectMapper; // Import do Jackson
+import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.springframework.stereotype.Component;
+import software.amazon.awssdk.services.sqs.model.Message; // IMPORTANTE: SDK v2
 import java.time.LocalDateTime;
 
 @Component
 public class SqsVideoListener {
 
     private final ProcessVideoCommand processVideoCommand;
-    private final ObjectMapper objectMapper; // Adicione o ObjectMapper
+    private final ObjectMapper objectMapper;
 
     public SqsVideoListener(ProcessVideoCommand processVideoCommand, ObjectMapper objectMapper) {
         this.processVideoCommand = processVideoCommand;
@@ -19,29 +20,28 @@ public class SqsVideoListener {
     }
 
     @SqsListener("${AWS_SQS_URL}")
-    public void onMessage(software.amazon.awssdk.services.sqs.model.Message sqsMessage) {
+    public void onMessage(Message sqsMessage) { // Recebe a mensagem bruta da SDK
         try {
-            // Pegamos o corpo da mensagem (Body) que é o JSON puro
-            String json = sqsMessage.body();
-            System.out.println("JSON recebido da fila: " + json);
+            // Pegamos o JSON puro do corpo da mensagem
+            String jsonBody = sqsMessage.body();
+            System.out.println("JSON recebido: " + jsonBody);
 
-            // Convertemos manualmente com o ObjectMapper que você já tem injetado
-            VideoEvent event = objectMapper.readValue(json, VideoEvent.class);
+            // Convertemos manualmente para o SEU VideoEvent local
+            VideoEvent event = objectMapper.readValue(jsonBody, VideoEvent.class);
 
-            // Converte para sua entidade de domínio e chama o UseCase
             VideoMetadata domainVideo = new VideoMetadata(
                     event.id(),
                     event.userId(),
                     event.fileName(),
                     "RECEIVED",
                     null,
-                    java.time.LocalDateTime.now()
+                    LocalDateTime.now()
             );
 
             processVideoCommand.process(domainVideo);
 
         } catch (Exception e) {
-            System.err.println("Erro crítico ao processar mensagem SQS: " + e.getMessage());
+            System.err.println("Erro ao processar mensagem: " + e.getMessage());
             e.printStackTrace();
         }
     }
