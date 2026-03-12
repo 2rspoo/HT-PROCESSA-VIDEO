@@ -2,32 +2,24 @@ package com.example.order.infrastructure.adapters.sqs;
 
 import com.example.order.application.ports.in.ProcessVideoCommand;
 import com.example.order.domain.entities.VideoMetadata;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.sqs.model.Message; // IMPORTANTE: Use este import
 import java.time.LocalDateTime;
 
 @Component
 public class SqsVideoListener {
 
     private final ProcessVideoCommand processVideoCommand;
-    private final ObjectMapper objectMapper;
 
-    public SqsVideoListener(ProcessVideoCommand processVideoCommand, ObjectMapper objectMapper) {
+    public SqsVideoListener(ProcessVideoCommand processVideoCommand) {
         this.processVideoCommand = processVideoCommand;
-        this.objectMapper = objectMapper;
     }
 
+    // O Spring converte automaticamente porque o JSON agora é puro!
     @SqsListener("${AWS_SQS_URL}")
-    public void onMessage(Message sqsMessage) { // Recebe a mensagem bruta da SDK
+    public void onMessage(VideoEvent event) {
         try {
-            // Pegamos o JSON puro do 'body', ignorando os cabeçalhos problemáticos
-            String jsonBody = sqsMessage.body();
-            System.out.println(">>> JSON recebido com sucesso: " + jsonBody);
-
-            // Agora sim, convertemos manualmente para o SEU VideoEvent local
-            VideoEvent event = objectMapper.readValue(jsonBody, VideoEvent.class);
+            System.out.println(">>> Processamento iniciado para o ficheiro: " + event.fileName());
 
             VideoMetadata domainVideo = new VideoMetadata(
                     event.id(),
@@ -41,7 +33,7 @@ public class SqsVideoListener {
             processVideoCommand.process(domainVideo);
 
         } catch (Exception e) {
-            System.err.println("Erro ao processar mensagem: " + e.getMessage());
+            System.err.println("Erro durante o processamento do vídeo: " + e.getMessage());
             e.printStackTrace();
         }
     }
