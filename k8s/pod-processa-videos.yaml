@@ -1,0 +1,17 @@
+apiVersion: monitoring.coreos.com/v1
+kind: PodMonitor
+metadata:
+  name: videoproc-app-pod-monitor # NOME ÚNICO
+  namespace: monitoring
+  labels:
+    release: monitoramento
+spec:
+  namespaceSelector:
+    any: true
+  selector:
+    matchLabels:
+      app: minha-app-processa # DEVE SER IGUAL ao label no deployment de vídeos
+  podMetricsEndpoints:
+    - targetPort: 8080
+      path: /actuator/prometheus
+      interval: 15s
