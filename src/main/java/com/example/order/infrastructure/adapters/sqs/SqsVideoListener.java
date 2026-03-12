@@ -27,7 +27,7 @@ public class SqsVideoListener {
             VideoMetadata domainVideo = new VideoMetadata(
                     event.id(),
                     event.userId(),
-                    s3Key, // Passa a S3 Key montada para o adaptador conseguir fazer o download
+                    event.fileName(), // Passa a S3 Key montada para o adaptador conseguir fazer o download
                     "RECEIVED",
                     null,
                     LocalDateTime.now()
