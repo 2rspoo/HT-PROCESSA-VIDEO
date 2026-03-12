@@ -30,25 +30,31 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 
     @Override
     public void process(VideoMetadata video) {
-        System.out.println("Iniciando processamento do pedido: " + video.pedidoId());
-
+        System.out.println("Iniciando processamento do pedido2: " + video.pedidoId());
         try {
             // 1. Alterar status no Dynamo para PROCESSING
+            System.out.println("PROCESSING " );
             repository.updateStatus(video.pedidoId(), "PROCESSING");
 
             // 2. Ler o vídeo original do S3
+            System.out.println("original do S3 " );
+
             byte[] videoData = storage.download(video.fileName());
 
             // 3. Processar (FFmpeg: prints + zip)
+            System.out.println("FFmpeg " );
             File zipFile = processor.process(videoData, video.fileName());
 
             // 4. Salvar o .zip no S3 e obter a URL
+            System.out.println(".zip" );
             String s3UrlZip = storage.uploadZip(video.fileName() + ".zip", zipFile);
 
             // 5. Atualizar Dynamo para DONE com a URL do S3
+            System.out.println("Dynamo" );
             repository.updateUrlAndStatus(video.pedidoId(), s3UrlZip, "DONE");
 
             // 6. Notificar finalização via SQS
+            System.out.println("Notificar" );
             notification.sendNotification(video.pedidoId(), "DONE", s3UrlZip);
 
             System.out.println("Processamento concluído com sucesso: " + video.pedidoId());

@@ -7,5 +7,6 @@ public interface ProcessVideoCommand {
      * Inicia o fluxo de processamento do vídeo:
      * Download -> Prints -> Zip -> Upload -> Notificação.
      */
+
     void process(VideoMetadata videoMetadata);
 }

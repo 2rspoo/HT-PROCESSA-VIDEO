@@ -32,7 +32,7 @@ public class SqsVideoListener {
                     null,
                     LocalDateTime.now()
             );
-
+            System.out.println(">>> Chama process " + s3Key);
             processVideoCommand.process(domainVideo);
 
         } catch (Exception e) {
