@@ -54,20 +54,7 @@ public class AwsConfig {
                 .build();
     }
 
-    @Bean
-    public SqsMessagingMessageConverter sqsMessagingMessageConverter(ObjectMapper objectMapper) {
-        SqsMessagingMessageConverter converter = new SqsMessagingMessageConverter();
 
-        MappingJackson2MessageConverter jacksonConverter = new MappingJackson2MessageConverter();
-        jacksonConverter.setObjectMapper(objectMapper);
-
-        // Em vez de setTypeIdPropertyName, usamos isso para dizer ao Jackson:
-        // "Não importa o que venha no header, use o tipo que eu definir no Listener"
-        jacksonConverter.setSerializedPayloadClass(String.class);
-
-        converter.setPayloadMessageConverter(jacksonConverter);
-        return converter;
-    }
 
 
 }

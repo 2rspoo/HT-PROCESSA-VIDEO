@@ -4,8 +4,8 @@ import com.example.order.application.ports.in.ProcessVideoCommand;
 import com.example.order.domain.entities.VideoMetadata;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.awspring.cloud.sqs.annotation.SqsListener;
+import org.springframework.messaging.Message; // IMPORTANTE: Use este import
 import org.springframework.stereotype.Component;
-import software.amazon.awssdk.services.sqs.model.Message; // IMPORTANTE: SDK v2
 import java.time.LocalDateTime;
 
 @Component
@@ -20,14 +20,13 @@ public class SqsVideoListener {
     }
 
     @SqsListener("${AWS_SQS_URL}")
-    public void onMessage(Message sqsMessage) { // Recebe a mensagem bruta da SDK
+    public void onMessage(Message<String> message) { // Recebe como Message de String
         try {
-            // Pegamos o JSON puro do corpo da mensagem
-            String jsonBody = sqsMessage.body();
-            System.out.println("JSON recebido: " + jsonBody);
+            // O payload é o JSON puro em formato String
+            String json = message.getPayload();
+            System.out.println(">>> JSON recebido: " + json);
 
-            // Convertemos manualmente para o SEU VideoEvent local
-            VideoEvent event = objectMapper.readValue(jsonBody, VideoEvent.class);
+            VideoEvent event = objectMapper.readValue(json, VideoEvent.class);
 
             VideoMetadata domainVideo = new VideoMetadata(
                     event.id(),
@@ -42,7 +41,6 @@ public class SqsVideoListener {
 
         } catch (Exception e) {
             System.err.println("Erro ao processar mensagem: " + e.getMessage());
-            e.printStackTrace();
         }
     }
 }
