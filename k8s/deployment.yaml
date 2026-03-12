@@ -41,5 +41,7 @@ spec:
               value: "https://sqs.us-east-1.amazonaws.com/579375260812/fila-processamento-videos"
             - name: AWS_SNS_URL  # <-- Nova variável para a fila
               value: "https://sqs.us-east-1.amazonaws.com/579375260812/fila-notifica-videos"
+            - name: AWS_SQS_RESULT_URL  # <-- Nova variável para a fila
+              value: "https://sqs.us-east-1.amazonaws.com/579375260812/fila-resulta-video"
             - name: AWS_DYNAMODB_TABLE  # <-- Adicione esta linha
               value: "Pedidos"

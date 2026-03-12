@@ -3,6 +3,7 @@ package com.example.order.application.usecases;
 import com.example.order.application.ports.in.ProcessVideoCommand;
 import com.example.order.application.ports.out.NotificationPort;
 import com.example.order.application.ports.out.VideoRepositoryPort;
+import com.example.order.application.ports.out.VideoResultPort;
 import com.example.order.application.ports.out.VideoStoragePort;
 
 import com.example.order.domain.entities.VideoMetadata;
@@ -16,16 +17,19 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
     private final VideoRepositoryPort repository;
     private final VideoStoragePort storage;
     private final NotificationPort notification;
+    private final VideoResultPort result;
     private final FFmpegVideoProcessor processor; // Seu componente de lógica de vídeo
 
     public ProcessVideoUseCase(VideoRepositoryPort repository,
                                VideoStoragePort storage,
                                NotificationPort notification,
-                               FFmpegVideoProcessor processor) {
+                               FFmpegVideoProcessor processor,
+                               VideoResultPort result) {
         this.repository = repository;
         this.storage = storage;
         this.notification = notification;
         this.processor = processor;
+        this.result = result;
     }
 
     @Override
@@ -50,8 +54,25 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
             String s3UrlZip = storage.uploadZip(video.pedidoId() + ".zip", zipFile);
 
             // 5. Atualizar Dynamo para DONE com a URL do S3
-            System.out.println("Dynamo" );
-            repository.updateUrlAndStatus(video.pedidoId(), s3UrlZip, "DONE");
+            System.out.println("result" );
+// Supondo que você tem o objeto 'video' original
+            String novoStatus = "DONE"; // ou "PROCESSING"
+            String novaS3Url = s3UrlZip;
+
+// Cria a cópia atualizada
+            VideoMetadata videoAtualizado = new VideoMetadata(
+                    video.pedidoId(),       // Mantém o antigo
+                    video.userId(),         // Mantém o antigo
+                    video.fileName(),       // Mantém o antigo
+                    novoStatus,             // NOVO VALOR!
+                    novaS3Url,              // NOVO VALOR!
+                    video.createdAt()       // Mantém o antigo
+            );
+
+// Envia o NOVO objeto para a fila
+            result.sendToProcess(videoAtualizado);
+
+            // repository.updateUrlAndStatus(video.pedidoId(), s3UrlZip, "DONE");
 
             // 6. Notificar finalização via SQS
             System.out.println("Notificar" );

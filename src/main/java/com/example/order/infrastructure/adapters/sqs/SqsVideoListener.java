@@ -2,6 +2,7 @@ package com.example.order.infrastructure.adapters.sqs;
 
 import com.example.order.application.ports.in.ProcessVideoCommand;
 import com.example.order.domain.entities.VideoMetadata;
+import com.example.order.infrastructure.adapters.sqs.dto.VideoEvent;
 import io.awspring.cloud.sqs.annotation.SqsListener;
 import org.springframework.stereotype.Component;
 import java.time.LocalDateTime;

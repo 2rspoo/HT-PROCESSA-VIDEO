@@ -1,4 +1,4 @@
-package com.example.order.infrastructure.adapters.sqs;
+package com.example.order.infrastructure.adapters.sqs.dto;
 
 public record VideoEvent(
         String id,
