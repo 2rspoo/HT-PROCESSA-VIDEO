@@ -2,24 +2,23 @@
 FROM maven:3.9.6-eclipse-temurin-21 AS builder
 WORKDIR /app
 
-# Copia o pom.xml
+# Copia as configurações de dependências
 COPY pom.xml .
 
-# Adicionamos -U para forçar a atualização e ignorar falhas de cache
-# E removemos o go-offline se ele continuar dando erro, indo direto para o package
-
+# Copia o código fonte (apenas uma vez)
 COPY src ./src
-RUN mvn package -DskipTests -Dmaven.test.skip=true
 
-COPY src ./src
-RUN mvn package -DskipTests -Dmaven.test.skip=true -U
+# Executa o build (O -U força a atualização das libs AWS se necessário)
+RUN mvn clean package -DskipTests -Dmaven.test.skip=true -U
 
 # Estágio 2: Runtime
 FROM eclipse-temurin:21-jre-alpine
+# Garante o FFmpeg instalado para o processador de vídeo
 RUN apk add --no-cache ffmpeg
 WORKDIR /app
-COPY --from=builder /app/target/*.jar app.jar
 
+# Copia o JAR gerado no estágio anterior
+COPY --from=builder /app/target/*.jar app.jar
 
 EXPOSE 8080
 ENTRYPOINT ["java", "-jar", "app.jar"]
