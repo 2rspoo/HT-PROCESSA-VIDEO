@@ -19,25 +19,30 @@ public class SqsVideoListener {
     }
 
     @SqsListener("${AWS_SQS_URL}")
-    public void onMessage(String rawBody) { // Recebe o JSON como texto puro
+    public void onMessage(software.amazon.awssdk.services.sqs.model.Message sqsMessage) {
         try {
-            // O ObjectMapper (Jackson) converte o texto no seu DTO local
-            // Ignorando qualquer cabeçalho "JavaType" que o outro serviço enviou
-            VideoEvent event = objectMapper.readValue(rawBody, VideoEvent.class);
+            // Pegamos o corpo da mensagem (Body) que é o JSON puro
+            String json = sqsMessage.body();
+            System.out.println("JSON recebido da fila: " + json);
 
-            // Converte para o Domínio
+            // Convertemos manualmente com o ObjectMapper que você já tem injetado
+            VideoEvent event = objectMapper.readValue(json, VideoEvent.class);
+
+            // Converte para sua entidade de domínio e chama o UseCase
             VideoMetadata domainVideo = new VideoMetadata(
-                    event.PedidoID(),
+                    event.id(),
                     event.userId(),
                     event.fileName(),
                     "RECEIVED",
                     null,
-                    LocalDateTime.now()
+                    java.time.LocalDateTime.now()
             );
 
             processVideoCommand.process(domainVideo);
+
         } catch (Exception e) {
-            System.err.println("Erro crítico na conversão do JSON: " + e.getMessage());
+            System.err.println("Erro crítico ao processar mensagem SQS: " + e.getMessage());
+            e.printStackTrace();
         }
     }
 }

@@ -68,4 +68,6 @@ public class AwsConfig {
         converter.setPayloadMessageConverter(jacksonConverter);
         return converter;
     }
+
+
 }
