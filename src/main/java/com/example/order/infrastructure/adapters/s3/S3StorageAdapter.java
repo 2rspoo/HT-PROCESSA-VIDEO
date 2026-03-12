@@ -25,7 +25,9 @@ public class S3StorageAdapter implements VideoStoragePort {
     @Override
     public byte[] download(String fileId) {
         // É O ADAPTADOR que sabe que o S3 usa a pasta "uploads/"
+        System.out.println(">>> Chama fileId " + fileId);
         String s3Key = "uploads/" + fileId;
+        System.out.println(">>> Chama s3Key " + s3Key);
 
         return s3Client.getObjectAsBytes(builder -> builder.bucket(bucketName).key(s3Key)).asByteArray();
     }
