@@ -82,6 +82,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 
         } catch (Exception e) {
             System.err.println("Erro ao processar vídeo: " + e.getMessage());
+
             repository.updateStatus(video.pedidoId(), "ERROR");
         }
     }
