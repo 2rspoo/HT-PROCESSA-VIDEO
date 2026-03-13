@@ -82,7 +82,21 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 
         } catch (Exception e) {
             System.err.println("Erro ao processar vídeo: " + e.getMessage());
-            repository.updateStatus(video.pedidoId(), "ERROR");
+            String novoStatus = "ERRO"; // ou "PROCESSING"
+
+
+// Cria a cópia atualizada
+            VideoMetadata videoAtualizado = new VideoMetadata(
+                    video.pedidoId(),       // Mantém o antigo
+                    video.userId(),         // Mantém o antigo
+                    video.fileName(),       // Mantém o antigo
+                    novoStatus,             // NOVO VALOR!
+                    video.s3Url(),                     // NOVO VALOR!
+                    video.createdAt()       // Mantém o antigo
+            );
+
+// Envia o NOVO objeto para a fila
+            result.sendToProcess(videoAtualizado);
         }
     }
 }
