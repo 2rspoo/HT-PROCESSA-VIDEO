@@ -78,6 +78,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
             System.out.println("Notificar" );
             notification.sendNotification(video.pedidoId(), "DONE", s3UrlZip);
 
+
             System.out.println("Processamento concluído com sucesso: " + video.pedidoId());
 
         } catch (Exception e) {
