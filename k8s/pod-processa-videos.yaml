@@ -1,7 +1,7 @@
 apiVersion: monitoring.coreos.com/v1
 kind: PodMonitor
 metadata:
-  name: videoproc-app-pod-monitor # NOME ÚNICO
+  name: videoproc-app-pod-monitor # NOME ÚNICOs
   namespace: monitoring
   labels:
     release: monitoramento
