@@ -29,6 +29,14 @@ jobs:
           path: ~/.sonar/cache
           key: ${{ runner.os }}-sonar
           restore-keys: ${{ runner.os }}-sonar
+      # Roda os testes primeiro para garantir que o JaCoCo gere o arquivo
+      - name: Run Tests and Generate JaCoCo Report
+        run: mvn -B clean verify
+
+
+      # PASSO ESPIÃO: Procura o arquivo jacoco.xml e mostra na tela
+      - name: Check if JaCoCo XML exists
+        run: find . -name "jacoco.xml"
 
       - name: Build and analyze
         env:
