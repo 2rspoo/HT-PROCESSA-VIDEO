@@ -98,6 +98,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 // Envia o NOVO objeto para a fila
             result.sendToProcess(videoAtualizado);
 
+
             //repository.updateStatus(video.pedidoId(), "ERROR");
         }
     }
