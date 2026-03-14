@@ -12,9 +12,9 @@
 	</parent>
 
 	<groupId>com.example</groupId>
-	<artifactId>processa-video</artifactId>
+	<artifactId>PROCESSA-VIDEO</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>processa-video</name>
+	<name>PROCESSA-VIDEO</name>
 	<description>Processamento de Imagens - Clean Architecture</description>
 
 	<properties>
@@ -24,6 +24,13 @@
 		<jacoco.plugin.version>0.8.12</jacoco.plugin.version>
 		<springdoc.version>2.8.8</springdoc.version>
 		<cucumber.version>7.15.0</cucumber.version>
+
+		<sonar.organization>2rspoo</sonar.organization>
+		<sonar.projectKey>2rspoo_HT-PROCESSA-VIDEO</sonar.projectKey>
+		<sonar.host.url>https://sonarcloud.io</sonar.host.url>
+		<sonar.coverage.jacoco.xmlReportPaths>
+			${project.build.directory}/site/jacoco/jacoco.xml
+		</sonar.coverage.jacoco.xmlReportPaths>
 	</properties>
 
 
