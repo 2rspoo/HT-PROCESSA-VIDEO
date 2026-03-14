@@ -107,4 +107,5 @@ class ProcessVideoUseCaseTest {
         // 3. Garante que não notificou sucesso
         verify(notification, never()).sendNotification(anyString(), anyString(), anyString());
     }
+
 }
