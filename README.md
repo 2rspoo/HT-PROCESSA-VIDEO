@@ -1,5 +1,7 @@
 Grupo 82
-Contribuições: Camila Rabello Spoo Goshima - Discord: camilaspoo - 11 973091025 | 
+
+Contribuições: Camila Rabello Spoo Goshima - Discord: camilaspoo - 11 973091025 
+
 Rodrigo Rabello Spoo - Discord: srsinistro9459 - 11 981046096
 
 ⚙️ Processa Vídeo (Worker Assíncrono)
