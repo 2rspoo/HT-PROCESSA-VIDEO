@@ -63,8 +63,7 @@ public class ProcessVideoUseCase implements ProcessVideoCommand {
 
             // --- CORREÇÃO 1: DESCOMENTE A NOTIFICAÇÃO ---
             // O seu teste "shouldProcessVideoSuccessfully" falha porque esta linha estava comentada!
-            System.out.println("Notificar");
-            notification.sendNotification(video.pedidoId(), "DONE", s3UrlZip);
+
 
             System.out.println("Processamento concluído com sucesso: " + video.pedidoId());
 
